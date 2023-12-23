@@ -1,5 +1,6 @@
 import { VariantProps, cva } from 'class-variance-authority'
 import { ButtonHTMLAttributes, FC } from 'react'
+import cn from '../lib/utils'
 
 const buttonVariants = cva(
   'active:scale-95 inline-flex items-center justify-center rounded-md text-sm font-medium transition-color focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none',
@@ -22,11 +23,16 @@ const buttonVariants = cva(
   }
 )
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {} 
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+  isLoading?: boolean
+} 
 
-const Button: FC<ButtonProps> = ({ }) => {
+const Button: FC<ButtonProps> = ({ className, children, variant, isLoading, size, ...props }) => {
   return (
-    <div>Button</div>
+    <button className='cn(buttonVariants({variant, size, className}))' disabled={isLoading} {...props}>
+      {isLoading ? <Loader2 className='mr-2 h-4 w-4 animate-spin' /> | null : }
+      {children} //Renders information sent to component
+    </button>
   )
 }
 
