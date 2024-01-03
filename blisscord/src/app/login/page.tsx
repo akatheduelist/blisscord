@@ -1,6 +1,7 @@
 'use client'
 
 import Button from '@/components/ui/Button'
+import { signIn } from 'next-auth/react'
 import { FC, useState } from 'react'
 
 interface pageProps {}
@@ -9,8 +10,15 @@ const page: FC<pageProps> = ({}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
     async function loginWithGoogle()  {
-        throw new Error('Function not implemented.')
+    setIsLoading(true)
+    try {
+      await signIn('google')
+    } catch (error) {
+     // ERROR 
+    } finally {
+      setIsLoading(false)
     }
+  }
 
   return <>
     <div className='flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8'>
@@ -20,7 +28,8 @@ const page: FC<pageProps> = ({}) => {
           <h2 className='mt-6 text-center text-3xl font-bold tracking-light text-gray-900'>Sign into your account</h2>
         </div>
         <Button isLoading={isLoading} type='button' className='max-w-sm mx-auto w-full' onClick={loginWithGoogle}>
-           <svg
+          {isLoading ? null : 
+        <svg
                 className='mr-2 h-4 w-4'
                 aria-hidden='true'
                 focusable='false'
@@ -47,7 +56,9 @@ const page: FC<pageProps> = ({}) => {
                 />
                 <path d='M1 1h22v22H1z' fill='none' />
               </svg>
-            Google
+
+          }
+                       Google
         </Button>
       </div>
     </div>
