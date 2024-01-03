@@ -20,10 +20,11 @@ function getGoogleCredentials() {
   return { clientId, clientSecret }
 }
 
+// Use JSON Web Token to avoid session being stored in database
 export const authOptions: NextAuthOptions = {
   adapter: UpstashRedisAdapter(db),
   session: {
-    strategy: 'jwt' // Use JSON Web Token to avoid session being stored in database
+    strategy: 'jwt' 
   },
   pages: {
     signIn: '/login'
@@ -38,22 +39,28 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      const dbUser = (await db.get(`user:${token.id}`)) as User | null // Is the user in the database?
-
-      if (!dbUser) { // If user is not in the database
-        token.id = user!.id // Assert we know the type 'user' exisits
+      // Is the user in the database?
+      const dbUser = (await db.get(`user:${token.id}`)) as User | null 
+      // If user is not in the database
+      if (!dbUser) {         
+        // Assert we know the type 'user' exisits
+        token.id = user!.id 
         return token
       }
 
-      return { // User is in the database, return user
+      // User is in the database, return user
+      return { 
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
         image: dbUser.image
       }
     },
-    async session({ session, token }) { // Session is generated
-      if (token) { // If session exisits return token
+
+    // Session is generated
+    async session({ session, token }) { 
+      // If session exisits return token
+      if (token) { 
         session.user.id = token.id
         session.user.name = token.name
         session.user.email = token.email
