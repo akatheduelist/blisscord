@@ -6,6 +6,6 @@ export default async function Home() {
   await db.set('hello', 'hello')
 
   return (
-    <Button>Hello</Button>
+    <Button variant="ghost">Hello</Button>
   )
 }
