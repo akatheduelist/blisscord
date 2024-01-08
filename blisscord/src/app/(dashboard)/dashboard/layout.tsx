@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ReactNode } from "react";
+import SignOutButton from "@/components/SignOutButton";
 
 interface layoutProps {
   children: ReactNode;
@@ -67,6 +68,9 @@ const layout = async ({ children }: layoutProps) => {
                 })}
               </ul>
             </li>
+              
+
+
             <li className="-mx-6 mt-auto flex items-center">
               <div className='flex flex-1 items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900'>
                 <div className="relative h-8 w-8 bg-gray-50">
@@ -81,6 +85,7 @@ const layout = async ({ children }: layoutProps) => {
                 <span aria-hidden='true'>{session.user.name}</span></div>
                 <span className='text-xs text-zinc-400' aria-hidden="true">{session.user.email}</span>
               </div>
+              <SignOutButton className='h-f aspect-square' />
             </li>
           </ul>
         </nav>
