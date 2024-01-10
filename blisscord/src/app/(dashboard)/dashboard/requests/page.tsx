@@ -1,8 +1,8 @@
 import { fetchRedis } from "@/app/helpers/redis";
+import FriendRequests from "@/components/FriendRequests";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
-import { FC } from "react";
 
 const page = async ({}) => {
   const session = await getServerSession(authOptions);
@@ -27,7 +27,10 @@ const page = async ({}) => {
     <main className="pt-8">
       <h1 className="font-bold text-5xl mb-8">Add a friend</h1>
       <div className="flex flex-col gap-4">
-        <FriendRequest />
+        <FriendRequests
+          incomingFriendRequests={incomingFriendRequests}
+          sessionId={session.user.id}
+        />
       </div>
     </main>
   );
