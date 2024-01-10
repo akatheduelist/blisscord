@@ -33,7 +33,12 @@ const layout = async ({ children }: layoutProps) => {
   const session = await getServerSession(authOptions);
   if (!session) notFound();
 
-  const unseenRequestCount = (await fetchRedis('smembers', 'user:$(session.user.id):incoming_friend_requests') as User[]).length
+  const unseenRequestCount = (
+    (await fetchRedis(
+      "smembers",
+      "user:$(session.user.id):incoming_friend_requests",
+    )) as User[]
+  ).length;
 
   return (
     <div className="w-full flex h-screen">
@@ -73,6 +78,7 @@ const layout = async ({ children }: layoutProps) => {
               </ul>
             </li>
             <li>
+              {/* Bug -> unseenRequestCount not displaying from database */}
               <FriendRequestSidebarOptions
                 sessionId={session.user.id}
                 initalUnseenRequestCount={unseenRequestCount}

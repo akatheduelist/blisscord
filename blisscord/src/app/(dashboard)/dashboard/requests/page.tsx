@@ -15,13 +15,20 @@ const page = async ({}) => {
 
   const incomingFriendRequests = await Promise.all(
     incomingSenderIds.map(async (senderId) => {
-      const sender = (await fetchRedis("get", `user:${senderId}`)) as User;
+      const sender = (await fetchRedis("get", `user:${senderId}`)) as string;
+
+      // Remember -> Sender comes back as JSON so needs to be parsed
+      const senderParsed = JSON.parse(sender) as User;
+
       return {
         senderId,
-        senderEmail: sender.email,
+        senderEmail: senderParsed.email,
       };
     }),
   );
+
+  // BUG -> Why am I getting senderId but not senderEmail?
+  console.log("request", incomingFriendRequests);
 
   return (
     <main className="pt-8">

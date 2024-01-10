@@ -44,15 +44,19 @@ export const authOptions: NextAuthOptions = {
       const dbUserResult = (await fetchRedis("get", `user:${token.id}`)) as
         | string
         | null;
+
       // If user is not in the database
       if (!dbUserResult) {
         // Assert we know the type 'user' exisits
         token.id = user!.id;
-        console.log("token")
+
+        // Bug -> Why am I not getting the email from Redis?
+        console.log("token", token);
         return token;
       }
 
       const dbUser = JSON.parse(dbUserResult) as User;
+
       // User is in the database, return user
       return {
         id: dbUser.id,
