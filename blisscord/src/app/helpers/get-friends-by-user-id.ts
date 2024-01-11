@@ -16,4 +16,7 @@ export const getFriendsByUserId = async (userId: string) => {
       return friend;
     }),
   );
+
+  // Return the array of friends pulled from the db set
+  return friends;
 };
