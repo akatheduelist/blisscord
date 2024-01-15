@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { FC } from "react";
+import Messages from "@/components/Messsages";
 
 interface PageProps {
   params: {
@@ -21,13 +22,15 @@ async function getChatMessages(chatId: string) {
       0,
       -1,
     );
+
+    const dbMessages = results.map((message) => JSON.parse(message) as Message);
+    const reversedDbMessages = dbMessages.reverse();
+    const messages = messageArrayValidator.parse(reversedDbMessages);
+
+    return messages;
   } catch (error) {
     notFound();
   }
-
-  const dbMessages = results.map((message) => JSON.parse(message) as Message);
-  const reversedDbMessages = dbMessages.reverse();
-  const messages = messageArrayValidator.parse(reversedDbMessages);
 }
 
 // Gets the 'chatId' params from the [chatId] in the routing structure
@@ -64,8 +67,18 @@ const page = async ({ params }: PageProps) => {
               />
             </div>
           </div>
+          <div className="flex flex-col leading-tight">
+            <div className="text-xl flex items-center">
+              <span className="text-gray-700 mr-3 font-semibold">
+                {chatPartner.name}
+              </span>
+            </div>
+            <span className="text-sm text-gray-600">{chatPartner.email}</span>
+          </div>
         </div>
       </div>
+
+      <Messages initialMessages={initialMessages} />
     </div>
   );
 };
