@@ -2,6 +2,7 @@
 
 import { FC, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
+import Button from "./ui/Button";
 
 interface ChatInputProps {
   chatPartner: User;
@@ -10,6 +11,7 @@ interface ChatInputProps {
 const ChatInput: FC<ChatInputProps> = ({ chatPartner }) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [input, setInput] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const sendMessage = () => {};
 
@@ -30,6 +32,22 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner }) => {
           placeholder={`Message ${chatPartner.name}`}
           className="block w-full resize-none border-0 bg-transparent text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:py-1.5 sm:text-sm sm:leading-6"
         />
+        <div
+          onClick={() => textareaRef.current?.focus()}
+          className="py-2"
+          aria-hidden="true"
+        >
+          <div className="py-px">
+            <div className="h-9" />
+          </div>
+        </div>
+        <div className="absolute right-0 bottom-0 flex justify-between py-1 pl-3 pr-2">
+          <div className="flex-shrink-0">
+            <Button onClick={sendMessage} type="submit">
+              lkjsld
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
