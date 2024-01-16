@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { FC, useRef, useState } from "react";
 
@@ -6,7 +8,7 @@ interface MessagesProps {
   sessionId: string;
 }
 
-const Messages: FC<MessagesProps> = ({ initialMessages }) => {
+const Messages: FC<MessagesProps> = ({ initialMessages, sessionId }) => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
 
@@ -21,7 +23,7 @@ const Messages: FC<MessagesProps> = ({ initialMessages }) => {
         const isCurrentUser = message.senderId === sessionId;
 
         const hasNextMessageFromSameUser =
-          messages[idx - 1]?.senderId === messages[index].senderId;
+          messages[idx - 1]?.senderId === messages[idx].senderId;
 
         return (
           <div
@@ -46,8 +48,15 @@ const Messages: FC<MessagesProps> = ({ initialMessages }) => {
                     "bg-gray-200 text-gray-900": !isCurrentUser,
                     "rounded-br-none":
                       !hasNextMessageFromSameUser && isCurrentUser,
+                    "rounded-bl-none":
+                      !hasNextMessageFromSameUser && !isCurrentUser,
                   })}
-                ></span>
+                >
+                  {message.text}{" "}
+                  <span className="ml-2 text-xs text-gray-400">
+                    {message.timestamp}
+                  </span>
+                </span>
               </div>
             </div>
           </div>
