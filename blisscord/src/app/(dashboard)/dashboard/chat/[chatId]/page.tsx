@@ -78,7 +78,7 @@ const page = async ({ params }: PageProps) => {
         </div>
       </div>
 
-      <Messages initialMessages={initialMessages} />
+      <Messages sessionId={session.user.id} initialMessages={initialMessages} />
     </div>
   );
 };
