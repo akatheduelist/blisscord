@@ -18,7 +18,7 @@ const FriendRequests: FC<FriendRequestsProps> = ({
 }) => {
   const router = useRouter();
 
-  const [friendRequests, setFriendRequest] = useState<IncomingFriendRequest[]>(
+  const [friendRequests, setFriendRequests] = useState<IncomingFriendRequest[]>(
     incomingFriendRequests,
   );
 
@@ -27,8 +27,12 @@ const FriendRequests: FC<FriendRequestsProps> = ({
       toPusherKey(`user:${sessionId}:incoming_friend_requests`),
     );
 
-    const friendRequestHandler = () => {
-      console.log("new friend request");
+    const friendRequestHandler = ({
+      senderId,
+      senderEmail,
+    }: IncomingFriendRequest) => {
+      // console.log("new friend request");
+      setFriendRequests((prev) => [...prev, { senderId, senderEmail }]);
     };
 
     pusherClient.bind("incoming_friend_requests", friendRequestHandler);
@@ -47,7 +51,7 @@ const FriendRequests: FC<FriendRequestsProps> = ({
       id: senderId,
     });
 
-    setFriendRequest((prev) =>
+    setFriendRequests((prev) =>
       prev.filter((request) => request.senderId !== senderId),
     );
 
