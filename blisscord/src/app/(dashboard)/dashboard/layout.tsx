@@ -31,10 +31,19 @@ const sidebarOptions: SidebarOption[] = [
   },
 ];
 
+// Layout component of main dashboard route configures a server rendered sidebar
+// that does not get re-rendered with the internal pages improving performance.
+// The layout takes in ReactNodes as children which are going to be the 'internal'
+// components that get rendered to the right of the side bar.
 const layout = async ({ children }: layoutProps) => {
+  // getServerSession is function provided by next-auth to get the current auth session
+  // authOptions is an object created in the "auth" library for passing important info
+  // to next-auth such as jwt token needed to verify the session.
   const session = await getServerSession(authOptions);
+
   if (!session) notFound();
 
+  // getFriendsByUserId is just a helper function to poll the db for a list of friends based on the current users id.
   const friends = await getFriendsByUserId(session.user.id);
 
   const unseenRequestCount = (

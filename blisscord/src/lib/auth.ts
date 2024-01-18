@@ -51,7 +51,6 @@ export const authOptions: NextAuthOptions = {
         token.id = user!.id;
 
         // Bug -> Why am I not getting the email from Redis?
-        console.log("token", token);
         return token;
       }
 

@@ -1,13 +1,15 @@
-import { FC } from 'react'
+import { FC } from "react";
 
-interface pageProps {}
+interface pageProps { }
 
-const page: FC<pageProps> = ({}) => {
+// Main landing page for the dashboard. Dashboard
+// is only available to users who are logged in and verified.
+const page: FC<pageProps> = ({ }) => {
   return (
     <main>
       <div>dashboard page</div>
     </main>
-  )
-}
+  );
+};
 
-export default page
+export default page;
