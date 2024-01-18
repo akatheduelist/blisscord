@@ -5,6 +5,7 @@ import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { pusherClient } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utils";
 
 interface FriendRequestsProps {
   incomingFriendRequests: IncomingFriendRequest[];
@@ -22,8 +23,24 @@ const FriendRequests: FC<FriendRequestsProps> = ({
   );
 
   useEffect(() => {
-    pusherClient.subscribe(`user:${sessionId}:incoming_friend_requests`);
-  }, []);
+    pusherClient.subscribe(
+      toPusherKey(`user:${sessionId}:incoming_friend_requests`),
+    );
+
+    const friendRequestHandler = () => {
+      console.log("new friend request");
+    };
+
+    pusherClient.bind("incoming_friend_requests", friendRequestHandler);
+
+    return () => {
+      pusherClient.unsubscribe(
+        toPusherKey(`user:${sessionId}:incoming_friend_requests`),
+      );
+
+      pusherClient.unbind("incoming_friend_requests", friendRequestHandler);
+    };
+  }, [sessionId]);
 
   const acceptFriend = async (senderId: string) => {
     await axios.post("/api/friends/accept", {
