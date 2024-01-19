@@ -11,7 +11,6 @@ export default withAuth(
     // Building a list of paths to check
     const pathname = req.nextUrl.pathname;
     const isLoginPage = pathname.startsWith("/login");
-
     const sensitiveRoutes = ["/dashboard"];
     const isAccessingSensitiveRoute = sensitiveRoutes.some((route) =>
       pathname.startsWith(route),

@@ -4,7 +4,7 @@ import { db } from "./db";
 import GoogleProvider from "next-auth/providers/google";
 import { fetchRedis } from "@/app/helpers/redis";
 
-// Remind us with error in prod if values not set
+// Reminds us with error in prod if environment variables are not set
 function getGoogleCredentials() {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -17,11 +17,11 @@ function getGoogleCredentials() {
     throw new Error("Missing GOOGLE_CLIENT_SECRET");
   }
 
-  // Else return values from env file
+  // Return environment variables from .env file
   return { clientId, clientSecret };
 }
 
-// Use JSON Web Token to avoid session being stored in database
+// Use JSON Web Token as our NextAuthOption to avoid session information being stored in database
 export const authOptions: NextAuthOptions = {
   adapter: UpstashRedisAdapter(db),
   session: {
@@ -31,6 +31,7 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   providers: [
+    // Using next-auth built-in GoogleProvider
     GoogleProvider({
       clientId: getGoogleCredentials().clientId,
       clientSecret: getGoogleCredentials().clientSecret,
@@ -40,28 +41,26 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // Is the user in the database?
+      // Is the user in the database? Send get request to fetchRedis to query the db.
       const dbUserResult = (await fetchRedis("get", `user:${token.id}`)) as
         | string
         | null;
 
-      // If user is not in the database
+      // If the user is not in the database
       if (!dbUserResult) {
         // Assert we know the type 'user' exisits
         token.id = user!.id;
-
-        // Bug -> Why am I not getting the email from Redis?
         return token;
       }
 
+      // dbUser is returned as JSON, parse into POJO as User type
       const dbUser = JSON.parse(dbUserResult) as User;
 
-      // User is in the database, return user
       return {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
-        image: dbUser.image,
+        picture: dbUser.image,
       };
     },
 
@@ -72,7 +71,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id;
         session.user.name = token.name;
         session.user.email = token.email;
-        session.user.image = token.image;
+        session.user.image = token.picture;
       }
 
       return session; // Else return session
