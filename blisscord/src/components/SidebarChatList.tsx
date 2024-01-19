@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Message } from "postcss";
 import { FC, Key, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import UnseenChatToast from "./UseenChatToast";
 
 interface sidebarChatListProps {
   friends: User[];
@@ -38,9 +39,22 @@ const SidebarChatList: FC<sidebarChatListProps> = ({ friends, sessionId }) => {
         pathname !==
         `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`;
 
+      console.log("should notify? ==>", shouldNotifify);
+
       if (!shouldNotifify) return;
 
-      toast.custom((t) => { });
+      toast.custom((t) => (
+        <UnseenChatToast
+          t={t}
+          sessionId={sessionId}
+          senderId={message.senderId}
+          senderImg={message.senderImg}
+          senderMessage={message.text}
+          senderName={message.senderName}
+        />
+      ));
+
+      setUnseenMessages((prev) => [...prev, message]);
     };
 
     pusherClient.bind("new_message", chatHandler);
