@@ -1,18 +1,56 @@
 "use client";
 
-import { chatHrefConstructor } from "@/lib/utils";
+import { pusherClient } from "@/lib/pusher";
+import { chatHrefConstructor, toPusherKey } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
+import { Message } from "postcss";
 import { FC, Key, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface sidebarChatListProps {
   friends: User[];
   sessionId: string;
 }
 
+interface ExtendedMessage extends Message {
+  senderImg: string;
+  senderName: string;
+}
+
 const SidebarChatList: FC<sidebarChatListProps> = ({ friends, sessionId }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [unseenMessages, setUnseenMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:chats`));
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`));
+
+    // To see new friend requests we just need to refresh the page, the friend requests are already updated in it's component.
+    // Next.js router can refresh the window without hard reloading the page
+    const newFriendHandler = () => {
+      router.refresh;
+    };
+
+    // If you are NOT in the chat window but receive a message, show a toast notification with message.
+    const chatHandler = (message: ExtendedMessage) => {
+      const shouldNotifify =
+        pathname !==
+        `/dashboard/chat/${chatHrefConstructor(sessionId, message.senderId)}`;
+
+      if (!shouldNotifify) return;
+
+      toast.custom((t) => { });
+    };
+
+    pusherClient.bind("new_message", chatHandler);
+    pusherClient.bind("new_friend", newFriendHandler);
+
+    return () => {
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:chats`));
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
+    };
+  }, []);
 
   useEffect(() => {
     if (pathname?.includes("chat")) {

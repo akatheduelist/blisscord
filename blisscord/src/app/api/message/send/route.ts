@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     )) as string;
     const sender = JSON.parse(rawSender) as User;
 
-    console.log("Sender info ", sender);
+    // console.log("Sender info ", sender);
 
     const timestamp = Date.now();
 
@@ -57,6 +57,12 @@ export async function POST(req: Request) {
       "incoming-message",
       message,
     );
+
+    pusherServer.trigger(toPusherKey(`user:${friendId}:chats`), "new_message", {
+      ...message,
+      senderImg: sender.image,
+      senderName: sender.name,
+    });
 
     // If valid, send message to the user
     await db.zadd(`chat:${chatId}:messages`, {
