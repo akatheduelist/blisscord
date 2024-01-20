@@ -6,7 +6,6 @@ import { toPusherKey } from "@/lib/utils";
 import { messageValidator } from "@/lib/validations/message";
 import { nanoid } from "nanoid";
 import { getServerSession } from "next-auth";
-import { Message } from "postcss";
 
 export async function POST(req: Request) {
   try {
@@ -48,7 +47,6 @@ export async function POST(req: Request) {
       senderId: session.user.id,
       text,
       timestamp,
-      type: "",
     };
 
     const message = messageValidator.parse(messageData);
