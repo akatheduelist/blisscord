@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 // RootLayout is the base of the app that all other components / pages / layouts
 // will render. RootLayout takes in children of type ReactNode and passes to the interior
-// of the body for page rendering.
+// of the body.
 // Wrapping body in Providers to give global context throughout app.
 export default function RootLayout({
   children,
