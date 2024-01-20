@@ -61,8 +61,8 @@ const layout = async ({ children }: layoutProps) => {
         </Link>
 
         {friends.length > 0 ? (
-          <div className="text-xs fond-semibold leading-6 text-gray-400">
-            Your chats
+          <div className="text-xs font-semibold leading-6 text-gray-400">
+            Current chats
           </div>
         ) : null}
 

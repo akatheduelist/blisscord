@@ -47,7 +47,7 @@ const Messages: FC<MessagesProps> = ({
   return (
     <div
       id="messages"
-      className="flex h-full flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
+      className="flex h-full flex-1 flex-col-reverse gap-4 p-3 border-l-2 border-r-2 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
     >
       <div ref={scrollDownRef} />
 
@@ -63,7 +63,7 @@ const Messages: FC<MessagesProps> = ({
             key={`${message.id}-${message.timestamp}`}
           >
             <div
-              className={cn("flex items-end", { "jsutify-end": isCurrentUser })}
+              className={cn("flex items-end", { "justify-end": isCurrentUser })}
             >
               <div
                 className={cn(

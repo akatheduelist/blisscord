@@ -8,8 +8,8 @@
   }
 }
 .scrollbar-w-2::-webkit-scrollbar {
-  width: 0.25rem;
-  height: 0.25rem;
+  width: 0.55rem;
+  height: 0.55rem;
 }
 
 .scrollbar-track-blue-lighter::-webkit-scrollbar-track {
