@@ -64,7 +64,7 @@ const FriendRequests: FC<FriendRequestsProps> = ({
       id: senderId,
     });
 
-    setFriendRequest((prev) =>
+    setFriendRequests((prev) =>
       prev.filter((request) => request.senderId !== senderId),
     );
 
