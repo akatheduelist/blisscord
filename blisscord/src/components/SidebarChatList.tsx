@@ -22,6 +22,7 @@ const SidebarChatList: FC<sidebarChatListProps> = ({ friends, sessionId }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [unseenMessages, setUnseenMessages] = useState<Message[]>([]);
+  const [activeChats, setActiveChats] = useState<User[]>(friends);
 
   useEffect(() => {
     pusherClient.subscribe(toPusherKey(`user:${sessionId}:chats`));
@@ -29,8 +30,8 @@ const SidebarChatList: FC<sidebarChatListProps> = ({ friends, sessionId }) => {
 
     // To see new friend requests we just need to refresh the page, the friend requests are already updated in it's component.
     // Next.js router can refresh the window without hard reloading the page
-    const newFriendHandler = () => {
-      router.refresh;
+    const newFriendHandler = (newFriend: User) => {
+      setActiveChats((prev) => [...prev, newFriend]);
     };
 
     // If you are NOT in the chat window but receive a message, show a toast notification with message.

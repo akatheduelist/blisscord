@@ -40,18 +40,30 @@ export async function POST(req: Request) {
       return new Response("No friend request", { status: 400 });
     }
 
-    // Notifiy added user
-    pusherServer.trigger(
-      toPusherKey(`user:${idToAdd}:friends`),
-      `new_friend`,
-      {},
-    );
+    const [userRaw, friendRaw] = (await Promise.all([
+      fetchRedis("get", `user:${session.user.id}`),
+      fetchRedis("get", `user:${idToAdd}`),
+    ])) as [string, string];
 
-    // sadd = Adding to the set
-    // srem = Remove from set
-    await db.sadd(`user:${session.user.id}:friends`, idToAdd);
-    await db.sadd(`user:${idToAdd}:friends`, session.user.id); // If you are my friend, I am your friend
-    await db.srem(`user:${session.user.id}:incoming_friend_requests`, idToAdd); // Clean up your requests
+    const user = JSON.parse(userRaw) as User;
+    const friend = JSON.parse(friendRaw) as User;
+
+    // Notifiy added user
+    await Promise.all([
+      pusherServer.trigger(
+        toPusherKey(`user:${idToAdd}:friends`),
+        `new_friend`,
+        user,
+      ),
+      pusherServer.trigger(
+        toPusherKey(`user:${session.user.id}:friends`),
+        `new_friend`,
+        friend,
+      ),
+      db.sadd(`user:${session.user.id}:friends`, idToAdd),
+      db.sadd(`user:${idToAdd}:friends`, session.user.id), // If you are my friend, I am your friend
+      db.srem(`user:${session.user.id}:incoming_friend_requests`, idToAdd), // Clean up your requests
+    ]);
 
     return new Response("OK"); // All seems to be coming back good but getting a 500 error? Adding a response fixes this.
   } catch (error) {
